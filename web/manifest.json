@@ -1,6 +1,6 @@
 {
-    "name": "msp_al_azhar",
-    "short_name": "msp_al_azhar",
+    "name": "MSP Al-Azhar",
+    "short_name": "MSP Al-Azhar",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

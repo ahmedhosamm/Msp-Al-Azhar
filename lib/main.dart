@@ -13,11 +13,10 @@ void main() {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'MSP Al-Azhar',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primaryColor: AppColors.primary700,
@@ -52,15 +51,6 @@ class MyApp extends StatelessWidget {
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
 
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
   final String title;
 
   @override
@@ -70,12 +60,28 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   int _selectedIndex = 0;
 
-  static final List<Widget> _pages = <Widget>[
+  final List<Widget> _pages = [
     HomeScreen(),
     BlogsScreen(),
     TeamScreen(),
     SettingScreen(),
   ];
+
+  final List<String> iconPaths = [
+    "assets/img/icons/home.png",
+    "assets/img/icons/blog.png",
+    "assets/img/icons/team.png",
+    "assets/img/icons/setting.png"
+  ];
+
+  final List<String> selectedIconPaths = [
+    "assets/img/icons/home_selected.png",
+    "assets/img/icons/blog_selected.png",
+    "assets/img/icons/team_selected.png",
+    "assets/img/icons/setting_selected.png"
+  ];
+
+  final List<String> labels = ["Home", "Blogs", "Our Team", "Setting"];
 
   void _onItemTapped(int index) {
     setState(() {
@@ -85,12 +91,6 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
     return Scaffold(
       body: _pages[_selectedIndex],
       bottomNavigationBar: BottomNavigationBar(
@@ -100,24 +100,21 @@ class _MyHomePageState extends State<MyHomePage> {
         selectedItemColor: AppColors.primary700,
         unselectedItemColor: AppColors.neutral600,
         backgroundColor: AppColors.neutral100,
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.article),
-            label: 'Blogs',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.group),
-            label: 'Our Team',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.settings),
-            label: 'Setting',
-          ),
-        ],
+        items: List.generate(4, (index) {
+          return BottomNavigationBarItem(
+            icon: Padding(
+              padding: const EdgeInsets.only(bottom: 4.0),
+              child: Image.asset(
+                _selectedIndex == index
+                    ? selectedIconPaths[index]
+                    : iconPaths[index],
+                width: 28,
+                height: 28,
+              ),
+            ),
+            label: labels[index],
+          );
+        }),
       ),
     );
   }

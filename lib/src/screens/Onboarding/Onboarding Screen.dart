@@ -66,7 +66,7 @@ class _OnboardingState extends State<Onboarding> {
                     style: AppTexts.highlightAccent.copyWith(
                       color: AppColors.primary700,
                       decoration: TextDecoration.underline,
-                      decorationColor: AppColors.neutral600,
+                      decorationColor: AppColors.primary700,
                     ),
                   ),
                 ),
