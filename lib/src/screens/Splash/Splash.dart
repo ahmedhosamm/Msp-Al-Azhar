@@ -1,9 +1,8 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../../../style/Colors.dart';
 import '../../../../style/Fonts.dart';
-import '../../../main.dart';
 import '../Onboarding/Onboarding Screen.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -42,9 +41,9 @@ class _SplashScreenState extends State<SplashScreen>
       await prefs.setBool('hasSeenOnboarding', true);
       nextScreen = Onboarding();
     } else if (isLoggedIn) {
-      nextScreen = MainScreen(); // <- already logged in
+      nextScreen = Onboarding(); // <- already logged in
     } else {
-      nextScreen = LoginScreen(); // <- go to login
+      nextScreen = Onboarding(); // <- go to login
     }
 
     Navigator.pushReplacement(
@@ -62,45 +61,45 @@ class _SplashScreenState extends State<SplashScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.primary500,
-      body: Column(
-        children: [
-          Expanded(
-            child: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Container(
-                    width: 150,
-                    height: 150,
-                    decoration: BoxDecoration(
-                      image: DecorationImage(
-                        image: AssetImage('assets/img/Logo1.png'),
-                        fit: BoxFit.contain,
-                      ),
-                    ),
+      backgroundColor: AppColors.primary700,
+      body: Center(
+        child: FadeTransition(
+          opacity: _fadeInAnimation,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                width: 150,
+                height: 150,
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage('assets/img/MSPLogo.png'),
                   ),
-                  const SizedBox(height: 24),
-                  FadeTransition(
-                    opacity: _fadeInAnimation,
-                    child: Text(
-                      "مرحبًا بك في سرد",
-                      style: AppTexts.heading2Bold.copyWith(
-                        color: AppColors.neutral100,
-                      ),
-                    ),
-                  ),
-                ],
+                ),
               ),
-            ),
+              Text(
+                "Welcome To MSP",
+                style: AppTexts.heading2Bold.copyWith(
+                  color: AppColors.neutral100,
+                ),
+              ),
+              const SizedBox(height: 16),
+              Text(
+                "program initiated in 2001 by Microsoft",
+                style: AppTexts.contentEmphasis.copyWith(
+                  color: AppColors.neutral100,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ],
           ),
-          Padding(
-            padding: EdgeInsets.only(bottom: 40),
-            child: CircularProgressIndicator(
-              valueColor: AlwaysStoppedAnimation<Color>(AppColors.neutral100),
-            ),
-          ),
-        ],
+        ),
+      ),
+      bottomNavigationBar: Padding(
+        padding: const EdgeInsets.only(bottom: 40),
+        child: CircularProgressIndicator(
+          valueColor: AlwaysStoppedAnimation<Color>(AppColors.neutral100),
+        ),
       ),
     );
   }

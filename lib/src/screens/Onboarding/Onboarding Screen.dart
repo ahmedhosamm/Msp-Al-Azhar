@@ -3,6 +3,8 @@ import 'package:flutter/widgets.dart';
 
 import '../../../style/Colors.dart';
 import '../../../style/Fonts.dart';
+import '../Home/UI/home.dart';
+import '../../../main.dart';
 
 
 class Onboarding extends StatefulWidget {
@@ -19,21 +21,21 @@ class _OnboardingState extends State<Onboarding> {
   final List<OnboardingPage> _pages = [
     OnboardingPage(
       image: "assets/img/1_Onb.png",
-      title: "مرحباً بك في",
-      subtitle: "سرد",
-      description: "استكشف مكتبة واسعة من الكتب في مختلف المجالات، واختر ما يناسب اهتماماتك، كل ذلك من مكان واحد",
+      title: "Welcome To",
+      subtitle: "MSP",
+      description: "Passionate people with vision working together to build real impact.",
     ),
     OnboardingPage(
       image: "assets/img/2_Onb.png",
-      title: "تلخيص لحظي ",
-      subtitle: "بالذكاء الاصطناعي",
-      description: "ما عندكش وقت؟ سرد بيلخّصلك الكتاب في دقائق باستخدام أحدث تقنيات الذكاء الاصطناعي، وبيوصلك لأهم الأفكار بسرعة.",
+      title: "Meet Our",
+      subtitle: "Team",
+      description: "Passionate people with vision working together to build real impact.",
     ),
     OnboardingPage(
       image: "assets/img/3_Onb.png",
-      title: " اجمع النقاط ",
-      subtitle: "وابدأ رحلتك",
-      description: "كل قراءة بتكسبك نقاط. بدّلهم بمزايا، خصومات، أو حتى كتب جديدة. خلّي قراءتك ممتعة ومحفزة!"
+      title: "Join to Our",
+      subtitle: "Committees",
+      description: "Start your path, gain new skills, and grow with MSP in every step."
 
     ),
 
@@ -45,7 +47,7 @@ class _OnboardingState extends State<Onboarding> {
     final isSmallScreen = size.height < 700;
 
     return Directionality(
-      textDirection: TextDirection.rtl,
+      textDirection: TextDirection.ltr,
       child: Scaffold(
         backgroundColor: AppColors.neutral100,
         appBar: AppBar(
@@ -58,10 +60,10 @@ class _OnboardingState extends State<Onboarding> {
                 child: TextButton(
                   onPressed: () => Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (_) => LoginScreen()),
+                    MaterialPageRoute(builder: (_) => MyHomePage(title: 'Flutter Demo Home Page')),
                   ),
                   child: Text(
-                    "تخطي",
+                    "Skip",
                     style: AppTexts.highlightAccent.copyWith(
                       color: AppColors.primary700,
                       decoration: TextDecoration.underline,
@@ -220,7 +222,7 @@ class _OnboardingState extends State<Onboarding> {
                 ),
               ),
               child: Text(
-                "السابق",
+                "Back",
                 style: AppTexts.highlightAccent.copyWith(
                   color: AppColors.primary700,
                   height: 0,
@@ -252,7 +254,7 @@ class _OnboardingState extends State<Onboarding> {
                 ),
               ),
               child: Text(
-                "التالي",
+                "Next",
                 style: AppTexts.highlightAccent.copyWith(
                   color: AppColors.neutral100,
                   height: 0,
@@ -276,9 +278,7 @@ class _OnboardingState extends State<Onboarding> {
           if (index == 2) {
             Navigator.pushReplacement(
               context,
-              MaterialPageRoute(
-                builder: (_) => LoginScreen(),
-              ),
+              MaterialPageRoute(builder: (_) => MyHomePage(title: 'Flutter Demo Home Page')),
             );
           } else {
             _pageController.nextPage(
@@ -296,7 +296,7 @@ class _OnboardingState extends State<Onboarding> {
           ),
         ),
         child: Text(
-          index == 2 ? "ابدأ الآن" : "التالي",
+          index == 2 ? "Let,s Start" : "Next",
           style: AppTexts.highlightAccent.copyWith(
             color: AppColors.neutral100,
             height: 0,
