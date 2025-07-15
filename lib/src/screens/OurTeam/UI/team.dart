@@ -6,6 +6,7 @@ import '../Logic/Team_state.dart';
 import '../../../../style/Colors.dart';
 import '../../../../style/Fonts.dart';
 import '../../../../style/BaseScreen.dart';
+import '../Profile Details/UI/ProfileDetails.dart';
 
 class TeamScreen extends StatelessWidget {
   const TeamScreen({Key? key}) : super(key: key);
@@ -33,27 +34,33 @@ class TeamScreen extends StatelessWidget {
     ];
   }
 
+  Widget _buildAppBar(BuildContext context, String title) {
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 32, horizontal: 16),
+      decoration: BoxDecoration(
+        color: AppColors.primary700,
+        borderRadius: const BorderRadius.only(
+          bottomLeft: Radius.circular(12),
+          bottomRight: Radius.circular(12),
+        ),
+      ),
+      child: Center(
+        child: Text(
+          title,
+          style: AppTexts.heading3Accent.copyWith(color: AppColors.neutral100),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (_) => TeamCubit()..fetchTeamMembers(),
       child: Column(
         children: [
-          Container(
-            padding: const EdgeInsets.symmetric(vertical: 32, horizontal: 16),
-            decoration: BoxDecoration(
-              color: AppColors.primary700,
-              borderRadius: const BorderRadius.only(
-                bottomLeft: Radius.circular(12),
-                bottomRight: Radius.circular(12),
-              ),
-            ),
-            child: Center(
-              child: Text(
-                "Our Team",
-                style: AppTexts.heading2Bold.copyWith(color: AppColors.neutral100),
-              ),
-            ),
+          _buildAppBar(context, 'Our Team'
+          
           ),
           Expanded(
             child: BaseScreen(
@@ -66,7 +73,7 @@ class TeamScreen extends StatelessWidget {
                     return ListView.separated(
                       itemCount: teamMembers.length,
                       separatorBuilder: (context, i) => const SizedBox(height: 16),
-                      itemBuilder: (context, i) => _buildTeamCard(teamMembers[i]),
+                      itemBuilder: (context, i) => _buildTeamCard(context, teamMembers[i]),
                     );
                   } else if (state is TeamError) {
                     return Center(child: Text(state.message));
@@ -98,7 +105,7 @@ class TeamScreen extends StatelessWidget {
     }
   }
 
-  Widget _buildTeamCard(Map<String, dynamic> member) {
+  Widget _buildTeamCard(BuildContext context, Map<String, dynamic> member) {
     final socialLinks = [
       if (member['facebook'] != null && member['facebook'].toString().isNotEmpty)
         {'icon': 'facebook', 'url': member['facebook']},
@@ -187,7 +194,13 @@ class TeamScreen extends StatelessWidget {
                       borderRadius: BorderRadius.circular(4),
                     ),
                   ),
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (_) => ProfileDetails(memberId: member['_id']),
+                      ),
+                    );
+                  },
                   child: Text(
                     'More Details',
                     style: AppTexts.contentAccent.copyWith(color: AppColors.primary700),
