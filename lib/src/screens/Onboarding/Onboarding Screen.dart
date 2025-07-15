@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-
 import '../../../style/Colors.dart';
 import '../../../style/Fonts.dart';
 import '../Home/UI/home.dart';
@@ -156,6 +155,8 @@ class _OnboardingState extends State<Onboarding> {
                           color: AppColors.neutral600,
 
                         ),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
                       ),
                       
                       SizedBox(height: isSmallScreen ? 24 : 32),

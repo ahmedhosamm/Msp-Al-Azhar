@@ -9,7 +9,7 @@ class BaseScreen extends StatelessWidget {
   const BaseScreen({
     Key? key,
     required this.child,
-    this.padding = const EdgeInsets.only(top: 24.0, left: 18.0, right: 18.0),
+    this.padding = const EdgeInsets.only(top: 0.0, left: 16.0, right: 16.0),
   }) : super(key: key);
 
   @override
