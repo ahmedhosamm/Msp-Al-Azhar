@@ -34,6 +34,22 @@ class TeamScreen extends StatelessWidget {
     ];
   }
 
+  List<Map<String, String>> _getLinktreeOrGettapIcons(String url) {
+    final lower = url.toLowerCase();
+    if (lower.contains('linktree')) {
+      return [
+        {'icon': 'linktree', 'url': url},
+      ];
+    } else if (lower.contains('gettap')) {
+      return [
+        {'icon': 'gettap', 'url': url},
+      ];
+    }
+    return [
+      {'icon': 'web', 'url': url},
+    ];
+  }
+
   Widget _buildAppBar(BuildContext context, String title) {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 32, horizontal: 16),
@@ -98,10 +114,12 @@ class TeamScreen extends StatelessWidget {
         return Image.asset('assets/img/icons/behance.png', width: 18, height: 18);
       case 'github':
         return Image.asset('assets/img/icons/github.png', width: 18, height: 18);
+      case 'gettap':
+        return Image.asset('assets/img/icons/linkgettap.png', width: 18, height: 18);
       case 'facebook':
         return Icon(Icons.facebook, size: 18, color: AppColors.neutral800);
       default:
-        return Icon(Icons.web, size: 18, color: AppColors.neutral800);
+        return Image.asset('assets/img/icons/linktree.png', width: 18, height: 18);
     }
   }
 
@@ -114,101 +132,91 @@ class TeamScreen extends StatelessWidget {
       if (member['behanceOrGithub'] != null && member['behanceOrGithub'].toString().isNotEmpty)
         ..._getBehanceOrGithubIcons(member['behanceOrGithub']),
       if (member['linktree'] != null && member['linktree'].toString().isNotEmpty)
-        {'icon': 'linktree', 'url': member['linktree']},
-    ].take(3).toList();
-    return Card(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-        side: BorderSide(color: AppColors.neutral600),
-      ),
-      elevation: 0,
-      color: AppColors.neutral100,
-      child: Padding(
-        padding: const EdgeInsets.all(12.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                CircleAvatar(
-                  radius: 24,
-                  backgroundColor: Colors.transparent,
-                  child: ClipOval(
-                    child: Image.network(
-                      member['image'],
-                      width: 56,
-                      height: 56,
-                      fit: BoxFit.cover,
-                      alignment: Alignment.topCenter,
-                    ),
-                  ),
-                ),
-                SizedBox(width: 12),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        member['name'],
-                        style: AppTexts.highlightAccent,
-                      ),
-                      Text(
-                        member['track'],
-                        style: AppTexts.contentRegular,
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(height: 12),
-            Text(
-              member['description'],
-              style: AppTexts.contentRegular,
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-            ),
-            SizedBox(height: 16),
-            Row(
-              children: [
-                ...socialLinks.map<Widget>((s) => Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 6.0),
-                  child: InkWell(
-                    onTap: () => _launchUrl(s['url']!),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        border: Border.all(color: AppColors.neutral400),
-                        borderRadius: BorderRadius.circular(4),
-                        color: AppColors.neutral100,
-                      ),
-                      padding: EdgeInsets.all(8),
-                      child: _buildSocialIcon(s['icon']),
-                    ),
-                  ),
-                )),
-                Spacer(),
-                OutlinedButton(
-                  style: OutlinedButton.styleFrom(
-                    side: BorderSide(color: AppColors.primary700),
-                    shape: RoundedRectangleBorder(
+        ..._getLinktreeOrGettapIcons(member['linktree']),
+    ];
+    return InkWell(
+      borderRadius: BorderRadius.circular(12),
+      onTap: () {
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (_) => ProfileDetails(memberId: member['_id']),
+          ),
+        );
+      },
+      child: Card(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+          side: BorderSide(color: AppColors.primary700),
+        ),
+        elevation: 0,
+        color: AppColors.neutral100,
+        child: Padding(
+          padding: const EdgeInsets.all(12.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Container(
+                    width: 50,
+                    height: 50,
+                    decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(4),
+                      border: Border.all(color: AppColors.neutral200, width: 0.5),
+                      image: DecorationImage(
+                        image: NetworkImage(member['image']),
+                        fit: BoxFit.cover,
+                        alignment: Alignment.topCenter,
+                      ),
                     ),
                   ),
-                  onPressed: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (_) => ProfileDetails(memberId: member['_id']),
-                      ),
-                    );
-                  },
-                  child: Text(
-                    'More Details',
-                    style: AppTexts.contentAccent.copyWith(color: AppColors.primary700),
+                  SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          member['name'],
+                          style: AppTexts.highlightAccent,
+                        ),
+                        Text(
+                          member['track'],
+                          style: AppTexts.contentRegular,
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-              ],
-            ),
-          ],
+                ],
+              ),
+              SizedBox(height: 12),
+              Text(
+                member['description'],
+                style: AppTexts.contentRegular,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+              ),
+              SizedBox(height: 16),
+              Row(
+                children: [
+                  ...socialLinks.map<Widget>((s) => Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 6.0),
+                    child: InkWell(
+                      onTap: () => _launchUrl(s['url']!),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          border: Border.all(color: AppColors.neutral1000),
+                          borderRadius: BorderRadius.circular(4),
+                          color: AppColors.neutral100,
+                        ),
+                        padding: EdgeInsets.all(8),
+                        child: _buildSocialIcon(s['icon']),
+                      ),
+                    ),
+                  )),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );

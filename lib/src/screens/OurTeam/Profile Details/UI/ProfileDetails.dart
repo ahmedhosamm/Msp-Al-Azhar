@@ -65,14 +65,17 @@ class _ProfileDetailsState extends State<ProfileDetails> with SingleTickerProvid
       case 'behance':
         asset = 'assets/img/icons/behance_Done.png';
         break;
+      case 'github':
+        asset = 'assets/img/icons/Github_Done.png';
+        break;
       case 'linktree':
         asset = 'assets/img/icons/linktree_Done.png';
         break;
+      case 'gettap':
+        asset = 'assets/img/icons/linkgettap_Done.png';
+        break;
       case 'linkedin':
         asset = 'assets/img/icons/linkedin_Done.png';
-        break;
-      case 'github':
-        asset = 'assets/img/icons/github_Done.png';
         break;
     }
     return Padding(
@@ -110,13 +113,21 @@ class _ProfileDetailsState extends State<ProfileDetails> with SingleTickerProvid
       if (url.toLowerCase().contains('behance')) {
         buttons.add(buildSocialButton('behance', 'Behance', url));
       } else if (url.toLowerCase().contains('github')) {
-        buttons.add(buildSocialButton('behance', 'Github', url));
+        buttons.add(buildSocialButton('github', 'Github', url));
       } else {
-        buttons.add(buildSocialButton('behance', 'Portfolio', url));
+        buttons.add(buildSocialButton('linktree', 'linktree', url));
       }
     }
     if (member['linktree'] != null && member['linktree'].toString().isNotEmpty) {
-      buttons.add(buildSocialButton('linktree', 'Linktree', member['linktree']));
+      final url = member['linktree'];
+      final lowerUrl = url.toLowerCase();
+      if (lowerUrl.contains('linktree')) {
+        buttons.add(buildSocialButton('linktree', 'Linktree', url));
+      } else if (lowerUrl.contains('gettap')) {
+        buttons.add(buildSocialButton('gettap', 'Personal Profile', url));
+      } else {
+        buttons.add(buildSocialButton('linktree', 'linktree', url));
+      }
     }
     if (member['linkedin'] != null && member['linkedin'].toString().isNotEmpty) {
       buttons.add(buildSocialButton('linkedin', 'linkedin', member['linkedin']));
@@ -199,10 +210,16 @@ class _ProfileDetailsState extends State<ProfileDetails> with SingleTickerProvid
                               ),
                               child: Column(
                                 children: [
-                                  CircleAvatar(
-                                    radius: 40,
-                                    backgroundColor: Colors.transparent,
-                                    backgroundImage: NetworkImage(member!['image'] ?? ''),
+                                  Container(
+                                    width: 75,
+                                    height: 75,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(8),
+                                      image: DecorationImage(
+                                        image: NetworkImage(member!['image'] ?? ''),
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
                                   ),
                                   const SizedBox(height: 12),
                                   Text(
