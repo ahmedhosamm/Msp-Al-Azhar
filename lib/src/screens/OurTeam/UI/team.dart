@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:url_launcher/url_launcher.dart';
+import '../../Search/UI/search_screen.dart';
 import '../Logic/Team_cubit.dart';
 import '../Logic/Team_state.dart';
 import '../../../../style/Colors.dart';
@@ -122,7 +123,10 @@ class TeamScreen extends StatelessWidget {
             child: IconButton(
               icon: Icon(Icons.search, color: AppColors.primary700),
               onPressed: () {
-                // TODO: فتح صفحة البحث
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => SearchScreen()),
+                );
               },
               iconSize: 24,
               padding: EdgeInsets.zero,
@@ -185,7 +189,47 @@ class TeamScreen extends StatelessWidget {
                             ],
                           );
                         } else if (state is TeamError) {
-                          return Center(child: Text(state.message));
+                          return Center(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                SizedBox(
+                                  height: 160,
+                                  child: Image.asset(
+                                    'assets/img/sorry.png',
+                                    fit: BoxFit.contain,
+                                    errorBuilder: (context, error, stackTrace) => Icon(Icons.error_outline, size: 100, color: AppColors.neutral600),
+                                  ),
+                                ),
+                                const SizedBox(height: 24),
+                                Text(
+                                  "Sorry, Ce Couldn't Cind Anything",
+                                  style: AppTexts.heading3Accent.copyWith(color: AppColors.neutral1000),
+                                ),
+                                const SizedBox(height: 8),
+                                Text(
+                                  "There Was A Problem Fetching The Team Members. Please Check Your Internet Connection Or Try Again.",
+                                  style: AppTexts.contentRegular.copyWith(color: AppColors.neutral400),
+                                  textAlign: TextAlign.center,
+                                ),
+                                const SizedBox(height: 24),
+                                ElevatedButton(
+                                  onPressed: () {
+                                    context.read<TeamCubit>().fetchTeamMembers();
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: AppColors.primary700,
+                                    foregroundColor: AppColors.neutral100,
+                                    padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                  ),
+                                  child: Text('Refresh', style: AppTexts.featureBold.copyWith(color: AppColors.neutral100)),
+                                ),
+                              ],
+                            ),
+                          );
                         }
                         return const SizedBox();
                       },
