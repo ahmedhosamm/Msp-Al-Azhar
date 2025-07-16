@@ -12,121 +12,123 @@ import '../../OurTeam/Logic/Team_state.dart';
 import '../../OurTeam/Profile Details/UI/ProfileDetails.dart';
 import '../../OurTeam/UI/team.dart';
 
-class SearchScreen extends StatefulWidget {
+// Bloc States
+abstract class SearchState {}
+class SearchInitial extends SearchState {
+  final String query;
+  SearchInitial(this.query);
+}
+
+// Bloc Cubit
+class SearchCubit extends Cubit<SearchState> {
+  SearchCubit() : super(SearchInitial(''));
+  void updateQuery(String query) {
+    emit(SearchInitial(query));
+  }
+}
+
+class SearchScreen extends StatelessWidget {
   const SearchScreen({Key? key}) : super(key: key);
 
   @override
-  State<SearchScreen> createState() => _SearchScreenState();
-}
-
-class _SearchScreenState extends State<SearchScreen> {
-  final TextEditingController _controller = TextEditingController();
-  String _query = '';
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.neutral100,
-      appBar: PreferredSize(
-        preferredSize: Size.fromHeight(90),
-        child: Container(
-          padding: const EdgeInsets.symmetric(vertical: 32, horizontal: 16),
-          decoration: BoxDecoration(
-            color: AppColors.primary700,
-            borderRadius: const BorderRadius.only(
-              bottomLeft: Radius.circular(12),
-              bottomRight: Radius.circular(12),
-            ),
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              GestureDetector(
-                onTap: () => Navigator.of(context).pop(),
-                child: Container(
-                  width: 50,
-                  height: 50,
-                  padding: const EdgeInsets.all(12),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(8),
+    return BlocProvider(
+      create: (_) => SearchCubit(),
+      child: BlocBuilder<SearchCubit, SearchState>(
+        builder: (context, state) {
+          final query = (state as SearchInitial).query;
+          final TextEditingController _controller = TextEditingController(text: query);
+          return Scaffold(
+            backgroundColor: AppColors.neutral100,
+            appBar: PreferredSize(
+              preferredSize: Size.fromHeight(90),
+              child: Container(
+                padding: const EdgeInsets.symmetric(vertical: 32, horizontal: 16),
+                decoration: BoxDecoration(
+                  color: AppColors.primary700,
+                  borderRadius: const BorderRadius.only(
+                    bottomLeft: Radius.circular(12),
+                    bottomRight: Radius.circular(12),
                   ),
-                  child: Icon(Icons.arrow_back, color: AppColors.primary700),
                 ),
-              ),
-              const SizedBox(width: 12),
-              Text(
-                'Search',
-                style: AppTexts.heading3Accent.copyWith(color: AppColors.neutral100),
-              ),
-            ],
-          ),
-        ),
-      ),
-      body: BaseScreen(
-        child: Column(
-          children: [
-            Container(
-              decoration: BoxDecoration(
-                color: AppColors.neutral100,
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: AppColors.neutral600, width: 1),
-              ),
-              child: TextField(
-                controller: _controller,
-                autofocus: true,
-                style: AppTexts.heading3Accent.copyWith(color: AppColors.neutral1000),
-                decoration: InputDecoration(
-                  hintText: 'Search for a Blog or Team member...',
-                  hintStyle: AppTexts.contentRegular.copyWith(color: AppColors.neutral600),
-                  border: InputBorder.none,
-                  contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-                  suffixIcon: _query.isNotEmpty
-                      ? IconButton(
-                          icon: Icon(Icons.clear, color: AppColors.neutral600),
-                          onPressed: () {
-                            setState(() {
-                              _controller.clear();
-                              _query = '';
-                            });
-                          },
-                        )
-                      : null,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    GestureDetector(
+                      onTap: () => Navigator.of(context).pop(),
+                      child: Container(
+                        width: 50,
+                        height: 50,
+                        padding: const EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Icon(Icons.arrow_back, color: AppColors.primary700),
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Text(
+                      'Search',
+                      style: AppTexts.heading3Accent.copyWith(color: AppColors.neutral100),
+                    ),
+                  ],
                 ),
-                onChanged: (val) {
-                  setState(() {
-                    _query = val.trim();
-                  });
-                },
-                textInputAction: TextInputAction.search,
-                onSubmitted: (val) {
-                  setState(() {
-                    _query = val.trim();
-                  });
-                  // الكيبورد سيظل ظاهرًا تلقائيًا إلا إذا خرج المستخدم
-                },
               ),
             ),
-            const SizedBox(height: 16),
-            Expanded(
-              child: MultiBlocProvider(
-                providers: [
-                  BlocProvider(create: (_) => BlogsCubit()..fetchBlogs()),
-                  BlocProvider(create: (_) => TeamCubit()..fetchTeamMembers()),
+            body: BaseScreen(
+              child: Column(
+                children: [
+                  Container(
+                    decoration: BoxDecoration(
+                      color: AppColors.neutral100,
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: AppColors.neutral600, width: 1),
+                    ),
+                    child: TextField(
+                      controller: _controller,
+                      autofocus: true,
+                      style: AppTexts.heading3Accent.copyWith(color: AppColors.neutral1000),
+                      decoration: InputDecoration(
+                        hintText: 'Search for a Blog or Team member...',
+                        hintStyle: AppTexts.contentRegular.copyWith(color: AppColors.neutral600),
+                        border: InputBorder.none,
+                        contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                        suffixIcon: query.isNotEmpty
+                            ? IconButton(
+                                icon: Icon(Icons.clear, color: AppColors.neutral600),
+                                onPressed: () {
+                                  context.read<SearchCubit>().updateQuery('');
+                                },
+                              )
+                            : null,
+                      ),
+                      onChanged: (val) {
+                        context.read<SearchCubit>().updateQuery(val.trim());
+                      },
+                      textInputAction: TextInputAction.search,
+                      onSubmitted: (val) {
+                        context.read<SearchCubit>().updateQuery(val.trim());
+                      },
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  Expanded(
+                    child: MultiBlocProvider(
+                      providers: [
+                        BlocProvider(create: (_) => BlogsCubit()..fetchBlogs()),
+                        BlocProvider(create: (_) => TeamCubit()..fetchTeamMembers()),
+                      ],
+                      child: query.isEmpty
+                          ? SizedBox()
+                          : _SearchResults(query: query),
+                    ),
+                  ),
                 ],
-                child: _query.isEmpty
-                    ? SizedBox()
-                    : _SearchResults(query: _query),
               ),
             ),
-          ],
-        ),
+          );
+        },
       ),
     );
   }

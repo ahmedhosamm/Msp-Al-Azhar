@@ -114,7 +114,7 @@ class BlogCard extends StatelessWidget {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (_) => BlogsDetails(blog: blog),
+            builder: (_) => BlogsDetails(blogId: blog.id),
           ),
         );
       },

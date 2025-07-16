@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:dio/dio.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../../../../style/BaseScreen.dart';
 import '../../../../../style/Colors.dart';
 import '../../../../../style/Fonts.dart';
-
+import '../profile_details_cubit.dart';
+import '../profile_details_state.dart';
 
 class ProfileDetails extends StatefulWidget {
   final String memberId;
@@ -15,37 +16,14 @@ class ProfileDetails extends StatefulWidget {
 }
 
 class _ProfileDetailsState extends State<ProfileDetails> with SingleTickerProviderStateMixin {
-  Map<String, dynamic>? member;
-  bool loading = true;
-  String error = '';
   late TabController _tabController;
 
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
-    fetchMember();
-  }
-
-  Future<void> fetchMember() async {
-    setState(() { loading = true; error = ''; });
-    try {
-      final dio = Dio();
-      final response = await dio.get('https://api.msp-alazhar.tech/teamMembersClient/get');
-      if (response.statusCode == 200 && response.data != null) {
-        final results = response.data['results'] as List<dynamic>;
-        final found = results.firstWhere((e) => e['_id'] == widget.memberId, orElse: () => null);
-        if (found != null) {
-          setState(() { member = found; loading = false; });
-        } else {
-          setState(() { error = 'Member not found'; loading = false; });
-        }
-      } else {
-        setState(() { error = 'Failed to load data'; loading = false; });
-      }
-    } catch (e) {
-      setState(() { error = 'Error: $e'; loading = false; });
-    }
+    // Fetch member using Cubit
+    Future.microtask(() => context.read<ProfileDetailsCubit>().fetchMember(widget.memberId));
   }
 
   void _launchUrl(String url) async {
@@ -135,7 +113,14 @@ class _ProfileDetailsState extends State<ProfileDetails> with SingleTickerProvid
     return buttons;
   }
 
-  Widget _buildAppBar(BuildContext context) {
+  Widget _buildAppBar(BuildContext context, ProfileDetailsState state) {
+    String? name;
+    bool loading = false;
+    if (state is ProfileDetailsLoading) {
+      loading = true;
+    } else if (state is ProfileDetailsLoaded) {
+      name = state.member['name'] ?? '';
+    }
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 32, horizontal: 16),
       decoration: BoxDecoration(
@@ -146,7 +131,7 @@ class _ProfileDetailsState extends State<ProfileDetails> with SingleTickerProvid
         ),
       ),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.start, // زر الرجوع والعنوان على اليمين
+        mainAxisAlignment: MainAxisAlignment.start,
         children: [
           GestureDetector(
             onTap: () => Navigator.pop(context),
@@ -158,7 +143,7 @@ class _ProfileDetailsState extends State<ProfileDetails> with SingleTickerProvid
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(8),
               ),
-              child: Icon(Icons.arrow_back, color: AppColors.primary700), // السهم على اليمين
+              child: Icon(Icons.arrow_back, color: AppColors.primary700),
             ),
           ),
           const SizedBox(width: 12),
@@ -172,13 +157,11 @@ class _ProfileDetailsState extends State<ProfileDetails> with SingleTickerProvid
                   ),
                 )
               : Text(
-                  member != null ? (member!['name'] ?? '') : '',
+                  name ?? '',
                   style: AppTexts.heading3Accent.copyWith(
                     color: AppColors.neutral100,
                   ),
                 ),
-
-
         ],
       ),
     );
@@ -186,18 +169,25 @@ class _ProfileDetailsState extends State<ProfileDetails> with SingleTickerProvid
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.neutral100,
-      body: Column(
-        children: [
-          _buildAppBar(context),
-          Expanded(
-            child: BaseScreen(
-              child: loading
-                  ? const Center(child: CircularProgressIndicator())
-                  : error.isNotEmpty
-                      ? Center(child: Text(error))
-                      : Column(
+    return BlocProvider(
+      create: (_) => ProfileDetailsCubit()..fetchMember(widget.memberId),
+      child: BlocBuilder<ProfileDetailsCubit, ProfileDetailsState>(
+        builder: (context, state) {
+          return Scaffold(
+            backgroundColor: AppColors.neutral100,
+            body: Column(
+              children: [
+                _buildAppBar(context, state),
+                Expanded(
+                  child: BaseScreen(
+                    child: () {
+                      if (state is ProfileDetailsLoading) {
+                        return const Center(child: CircularProgressIndicator());
+                      } else if (state is ProfileDetailsError) {
+                        return Center(child: Text(state.message));
+                      } else if (state is ProfileDetailsLoaded) {
+                        final member = state.member;
+                        return Column(
                           children: [
                             Container(
                               width: double.infinity,
@@ -216,19 +206,19 @@ class _ProfileDetailsState extends State<ProfileDetails> with SingleTickerProvid
                                       borderRadius: BorderRadius.circular(8),
                                       border: Border.all(color: AppColors.neutral200, width: 0.5),
                                       image: DecorationImage(
-                                        image: NetworkImage(member!['image'] ?? ''),
+                                        image: NetworkImage(member['image'] ?? ''),
                                         fit: BoxFit.cover,
                                       ),
                                     ),
                                   ),
                                   const SizedBox(height: 12),
                                   Text(
-                                    member!['name'] ?? '',
+                                    member['name'] ?? '',
                                     style: AppTexts.featureEmphasis,
                                   ),
                                   const SizedBox(height: 4),
                                   Text(
-                                    member!['track'] ?? '',
+                                    member['track'] ?? '',
                                     style: AppTexts.contentRegular.copyWith(color: AppColors.neutral500),
                                   ),
                                 ],
@@ -259,7 +249,7 @@ class _ProfileDetailsState extends State<ProfileDetails> with SingleTickerProvid
                                     child: Align(
                                       alignment: Alignment.topLeft,
                                       child: Text(
-                                        member!['description'] ?? '',
+                                        member['description'] ?? '',
                                         style: AppTexts.highlightEmphasis,
                                       ),
                                     ),
@@ -269,17 +259,23 @@ class _ProfileDetailsState extends State<ProfileDetails> with SingleTickerProvid
                                     padding: const EdgeInsets.only(top: 16.0),
                                     child: Column(
                                       crossAxisAlignment: CrossAxisAlignment.stretch,
-                                      children: buildContactButtons(member!),
+                                      children: buildContactButtons(member),
                                     ),
                                   ),
                                 ],
                               ),
                             ),
                           ],
-                        ),
+                        );
+                      }
+                      return const SizedBox();
+                    }(),
+                  ),
+                ),
+              ],
             ),
-          ),
-        ],
+          );
+        },
       ),
     );
   }
