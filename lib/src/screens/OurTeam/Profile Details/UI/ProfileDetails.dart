@@ -199,7 +199,6 @@ class _ProfileDetailsState extends State<ProfileDetails> with SingleTickerProvid
                       ? Center(child: Text(error))
                       : Column(
                           children: [
-                            const SizedBox(height: 16),
                             Container(
                               width: double.infinity,
                               padding: const EdgeInsets.all(12),
@@ -215,6 +214,7 @@ class _ProfileDetailsState extends State<ProfileDetails> with SingleTickerProvid
                                     height: 75,
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(8),
+                                      border: Border.all(color: AppColors.neutral200, width: 0.5),
                                       image: DecorationImage(
                                         image: NetworkImage(member!['image'] ?? ''),
                                         fit: BoxFit.cover,

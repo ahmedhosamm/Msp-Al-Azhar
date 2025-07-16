@@ -8,6 +8,44 @@ import '../../../../style/Fonts.dart';
 import '../../../../style/BaseScreen.dart';
 import '../Profile Details/UI/ProfileDetails.dart';
 
+// ويدجت لعرض العنوان والعدد
+class SectionCountHeader extends StatelessWidget {
+  final String sectionName;
+  final int count;
+  const SectionCountHeader({required this.sectionName, required this.count, Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Text(
+                  'Results for ',
+                  style: AppTexts.featureStandard.copyWith(color: AppColors.neutral600),
+                ),
+                Text(
+                  '"$sectionName"',
+                  style: AppTexts.featureEmphasis.copyWith(color: AppColors.primary700),
+                ),
+              ],
+            ),
+          ],
+        ),
+        const Spacer(),
+        Text(
+          count.toString(),
+          style: AppTexts.featureBold.copyWith(color: AppColors.primary700),
+        ),
+      ],
+    );
+  }
+}
+
 class TeamScreen extends StatelessWidget {
   const TeamScreen({Key? key}) : super(key: key);
 
@@ -60,11 +98,38 @@ class TeamScreen extends StatelessWidget {
           bottomRight: Radius.circular(12),
         ),
       ),
-      child: Center(
-        child: Text(
-          title,
-          style: AppTexts.heading3Accent.copyWith(color: AppColors.neutral100),
-        ),
+      child: Row(
+        children: [
+          const SizedBox(width: 40), // مساحة فارغة أو زر رجوع لو أردت
+          Expanded(
+            child: Center(
+              child: Text(
+                title,
+                style: AppTexts.heading3Accent.copyWith(color: AppColors.neutral100),
+                overflow: TextOverflow.ellipsis,
+                maxLines: 1,
+              ),
+            ),
+          ),
+          Container(
+            width: 50,
+            height: 50,
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: IconButton(
+              icon: Icon(Icons.search, color: AppColors.primary700),
+              onPressed: () {
+                // TODO: فتح صفحة البحث
+              },
+              iconSize: 24,
+              padding: EdgeInsets.zero,
+              constraints: BoxConstraints(),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -75,26 +140,57 @@ class TeamScreen extends StatelessWidget {
       create: (_) => TeamCubit()..fetchTeamMembers(),
       child: Column(
         children: [
-          _buildAppBar(context, 'Our Team'
-          
-          ),
+          _buildAppBar(context, 'Our Team'),
+
           Expanded(
             child: BaseScreen(
               child: BlocBuilder<TeamCubit, TeamState>(
                 builder: (context, state) {
-                  if (state is TeamLoading) {
-                    return const Center(child: CircularProgressIndicator());
-                  } else if (state is TeamLoaded) {
-                    final teamMembers = state.teamMembers;
-                    return ListView.separated(
-                      itemCount: teamMembers.length,
-                      separatorBuilder: (context, i) => const SizedBox(height: 16),
-                      itemBuilder: (context, i) => _buildTeamCard(context, teamMembers[i]),
-                    );
-                  } else if (state is TeamError) {
-                    return Center(child: Text(state.message));
-                  }
-                  return const SizedBox();
+                  return RefreshIndicator(
+                    onRefresh: () async {
+                      context.read<TeamCubit>().fetchTeamMembers();
+                    },
+                    child: Builder(
+                      builder: (context) {
+                        if (state is TeamLoading) {
+                          return Center(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                const CircularProgressIndicator(),
+
+                                const SizedBox(height: 16),
+                                Text('Loading Team Data..' ,
+                                  style: AppTexts.highlightEmphasis.copyWith(
+                                      color:AppColors.neutral1000
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+                        } else if (state is TeamLoaded) {
+                          final teamMembers = state.teamMembers;
+                          return Column(
+                            children: [
+                              SectionCountHeader(sectionName: 'Our Team', count: teamMembers.length),
+                              SizedBox(height: 12),
+                              Expanded(
+                                child: ListView.separated(
+                                  padding: EdgeInsets.zero,
+                                  itemCount: teamMembers.length,
+                                  separatorBuilder: (context, i) => const SizedBox(height: 16),
+                                  itemBuilder: (context, i) => _buildTeamCard(context, teamMembers[i]),
+                                ),
+                              ),
+                            ],
+                          );
+                        } else if (state is TeamError) {
+                          return Center(child: Text(state.message));
+                        }
+                        return const SizedBox();
+                      },
+                    ),
+                  );
                 },
               ),
             ),
@@ -150,6 +246,7 @@ class TeamScreen extends StatelessWidget {
         ),
         elevation: 0,
         color: AppColors.neutral100,
+        margin: EdgeInsets.zero, // إزالة أي margin خارجي للكارد
         child: Padding(
           padding: const EdgeInsets.all(12.0),
           child: Column(
@@ -170,7 +267,7 @@ class TeamScreen extends StatelessWidget {
                       ),
                     ),
                   ),
-                  SizedBox(width: 12),
+                  SizedBox(width: 12), // هذه المسافة أفقية داخل الكارد وليست بين الكروت
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
