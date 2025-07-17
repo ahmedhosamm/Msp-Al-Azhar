@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import 'Colors.dart';
 
 class BaseScreen extends StatelessWidget {
@@ -9,13 +8,13 @@ class BaseScreen extends StatelessWidget {
   const BaseScreen({
     Key? key,
     required this.child,
-    this.padding = const EdgeInsets.only(top: 24.0, left: 16.0, right: 16.0),
+    this.padding = const EdgeInsets.only(top: 24.0, left: 16.0, right: 16.0 ),
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.neutral100,
+      backgroundColor: Colors.white,
       body: Padding(
         padding: padding,
         child: child,

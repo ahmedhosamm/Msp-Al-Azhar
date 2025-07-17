@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:msp_al_azhar/src/screens/More/UI/More.dart';
 import 'src/screens/Home/UI/home.dart';
 import 'src/screens/Blogs/UI/blogs.dart';
 import 'src/screens/OurTeam/UI/team.dart';
-import 'src/screens/Setting/UI/setting.dart';
 import 'src/screens/Splash/Splash.dart';
 import 'style/Colors.dart';
 
@@ -64,24 +64,24 @@ class _MyHomePageState extends State<MyHomePage> {
     HomeScreen(),
     BlogsScreen(),
     TeamScreen(),
-    SettingScreen(),
+    MoreScreen(),
   ];
 
   final List<String> iconPaths = [
     "assets/img/icons/home.png",
     "assets/img/icons/blog.png",
     "assets/img/icons/team.png",
-    "assets/img/icons/setting.png"
+    "assets/img/icons/More.png"
   ];
 
   final List<String> selectedIconPaths = [
     "assets/img/icons/home_selected.png",
     "assets/img/icons/blog_selected.png",
     "assets/img/icons/team_selected.png",
-    "assets/img/icons/setting_selected.png"
+    "assets/img/icons/More_selected.png"
   ];
 
-  final List<String> labels = ["Home", "Blogs", "Our Team", "Setting"];
+  final List<String> labels = ["Home", "Blogs", "Our Team", "More"];
 
   void _onItemTapped(int index) {
     setState(() {
