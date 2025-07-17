@@ -58,7 +58,6 @@ class BlogCard extends StatelessWidget {
 
   // دالة لفتح الرابط
   void _launchUrl(BuildContext context, String url) async {
-    // تأكد أن الرابط يبدأ بـ https أو http
     String fixedUrl = url.trim();
     if (!fixedUrl.startsWith('http')) {
       fixedUrl = 'https://$fixedUrl';
@@ -72,8 +71,6 @@ class BlogCard extends StatelessWidget {
       );
     }
   }
-  // ملاحظة: تأكد من إضافة صلاحية الإنترنت في AndroidManifest.xml و LSApplicationQueriesSchemes في Info.plist
-  // إذا استمرت المشكلة، جرب فتح الرابط في متصفح خارجي على نفس الجهاز للتأكد من صحة الرابط
 
   Widget _buildSocialIcon(String iconName) {
     switch (iconName) {

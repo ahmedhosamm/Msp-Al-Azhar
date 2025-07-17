@@ -28,7 +28,7 @@ class _BlogsDetailsState extends State<BlogsDetails> {
       await launchUrl(uri, mode: LaunchMode.externalApplication);
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('لا يمكن فتح الرابط')),
+        SnackBar(content: Text('The Link Cannot Be Opened')),
       );
     }
   }

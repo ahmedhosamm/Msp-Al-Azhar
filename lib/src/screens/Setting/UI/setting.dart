@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../style/Colors.dart';
 import '../../../../style/Fonts.dart';
+import '../../../../style/BaseScreen.dart';
 
 // Bloc States
 abstract class SettingState {}
@@ -17,6 +18,29 @@ class SettingCubit extends Cubit<SettingState> {
 }
 
 class SettingScreen extends StatelessWidget {
+  final List<_SettingItem> items = const [
+    _SettingItem(
+      title: 'Information about us',
+      iconPath: 'assets/img/icons/Information about us.png',
+      route: '/about',
+    ),
+    _SettingItem(
+      title: 'Contact Us',
+      iconPath: 'assets/img/icons/Contact Us.png',
+      route: '/contact',
+    ),
+    _SettingItem(
+      title: 'Help Center',
+      iconPath: 'assets/img/icons/Help Center.png',
+      route: '/faq',
+    ),
+    _SettingItem(
+      title: 'Invite Friends',
+      iconPath: 'assets/img/icons/Invite Friends.png',
+      route: '/invite',
+    ),
+  ];
+
   Widget _buildAppBar(BuildContext context, String title) {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 32, horizontal: 16),
@@ -36,25 +60,68 @@ class SettingScreen extends StatelessWidget {
     );
   }
 
+  Widget _buildSettingItem(BuildContext context, _SettingItem item) {
+    return InkWell(
+      onTap: () {
+        // يمكنك إضافة التنقل هنا لاحقًا
+        // Navigator.pushNamed(context, item.route);
+      },
+      child: Row(
+        children: [
+          Image.asset(
+            item.iconPath,
+            width: 48,
+            height: 48,
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Text(
+              item.title,
+              style: AppTexts.highlightEmphasis,
+            ),
+          ),
+          Icon(Icons.arrow_forward_ios, size: 18, color: AppColors.primary700),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (_) => SettingCubit()..load(),
       child: BlocBuilder<SettingCubit, SettingState>(
         builder: (context, state) {
-          return Scaffold(
-            backgroundColor: AppColors.neutral100,
-            body: Column(
-              children: [
-                _buildAppBar(context, 'Settings'),
-                Expanded(
-                  child: Center(child: Text('4', style: TextStyle(fontSize: 48))),
+          return Column(
+            children: [
+              _buildAppBar(context, 'Setting'),
+              Expanded(
+                child: BaseScreen(
+                  child: ListView.separated(
+                    padding: EdgeInsets.zero,
+                    itemCount: items.length,
+                    separatorBuilder: (context, index) => Column(
+                      children: [
+                        const SizedBox(height: 16),
+                        Divider(height: 1, color: AppColors.neutral300),
+                        const SizedBox(height: 16),
+                      ],
+                    ),
+                    itemBuilder: (context, index) => _buildSettingItem(context, items[index]),
+                  ),
                 ),
-              ],
-            ),
+              ),
+            ],
           );
         },
       ),
     );
   }
+}
+
+class _SettingItem {
+  final String title;
+  final String iconPath;
+  final String route;
+  const _SettingItem({required this.title, required this.iconPath, required this.route});
 }
