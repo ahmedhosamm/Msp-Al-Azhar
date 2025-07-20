@@ -81,7 +81,7 @@ class _GalleryBodyState extends State<_GalleryBody> with SingleTickerProviderSta
       body: SafeArea(
         child: Column(
           children: [
-            CustomAppBar(title: 'Explore our Gallery'),
+            CustomAppBar(title: 'Explore Our Gallery'),
             Expanded(
               child: BaseScreen(
                 child: Column(

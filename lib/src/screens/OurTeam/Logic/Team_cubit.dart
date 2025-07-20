@@ -9,7 +9,8 @@ class TeamCubit extends Cubit<TeamState> {
     emit(TeamLoading());
     try {
       final members = await TeamApi.fetchTeamMembers();
-      emit(TeamLoaded(members.reversed.toList()));
+      final shuffledMembers = members.toList()..shuffle();
+      emit(TeamLoaded(shuffledMembers));
     } catch (e) {
       emit(TeamError(e.toString()));
     }

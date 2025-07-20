@@ -72,7 +72,7 @@ class HistoyOfTeamScreen extends StatelessWidget {
                                                     borderRadius: BorderRadius.circular(8),
                                                   ),
                                                   child: Text(
-                                                    item.date == '2024/2023' ? ' 24/23' : item.date,
+                                                    item.date == '2024/2023' ? ' 2024/2023' : item.date,
                                                     style: AppTexts.highlightEmphasis.copyWith(color: AppColors.neutral1000),
                                                   ),
                                                 ),
