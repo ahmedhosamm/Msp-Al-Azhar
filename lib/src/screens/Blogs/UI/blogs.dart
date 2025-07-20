@@ -282,7 +282,7 @@ class BlogsScreen extends StatelessWidget {
 
   Widget _buildAppBar(BuildContext context, String title) {
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: 32, horizontal: 16),
+      padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
       decoration: BoxDecoration(
         color: AppColors.primary700,
         borderRadius: const BorderRadius.only(
@@ -304,8 +304,8 @@ class BlogsScreen extends StatelessWidget {
             ),
           ),
           Container(
-            width: 50,
-            height: 50,
+            width: 48,
+            height: 48,
             padding: const EdgeInsets.all(0),
             decoration: BoxDecoration(
               color: Colors.white,
@@ -335,12 +335,13 @@ class BlogsScreen extends StatelessWidget {
       create: (_) => BlogsCubit()..fetchBlogs(),
       child: Scaffold(
         backgroundColor: AppColors.neutral100,
-        body: Column(
-          children: [
-            _buildAppBar(context, 'Our Blogs'),
-            Expanded(
-              child: BaseScreen(
-                child: BlocBuilder<BlogsCubit, BlogsState>(
+        body: SafeArea(
+          child: Column(
+            children: [
+              _buildAppBar(context, 'Our Blogs'),
+              Expanded(
+                child: BaseScreen(
+                  child: BlocBuilder<BlogsCubit, BlogsState>(
                   builder: (context, state) {
                     return RefreshIndicator(
                       onRefresh: () async {
@@ -433,6 +434,7 @@ class BlogsScreen extends StatelessWidget {
           ],
         ),
       ),
+    ),
     );
   }
 }

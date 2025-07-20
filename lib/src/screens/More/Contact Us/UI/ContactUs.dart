@@ -51,12 +51,13 @@ class ContactUsScreen extends StatelessWidget {
     ];
     return Scaffold(
       backgroundColor: AppColors.neutral100,
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const CustomAppBar(title: 'Contact Us'),
-          Expanded(
-            child: BaseScreen(
+      body: SafeArea(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const CustomAppBar(title: 'Contact Us'),
+            Expanded(
+              child: BaseScreen(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
@@ -70,6 +71,7 @@ class ContactUsScreen extends StatelessWidget {
           ),
         ],
       ),
+    )
     );
   }
 

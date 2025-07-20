@@ -11,12 +11,13 @@ class FAQScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.neutral100,
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const CustomAppBar(title: 'FAQ'),
-          Expanded(
-            child: BaseScreen(
+      body: SafeArea(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const CustomAppBar(title: 'FAQ'),
+            Expanded(
+              child: BaseScreen(
               child: ListView(
                 padding: EdgeInsets.zero,
                 children: [
@@ -56,6 +57,7 @@ class FAQScreen extends StatelessWidget {
           ),
         ],
       ),
+    )
     );
   }
 }

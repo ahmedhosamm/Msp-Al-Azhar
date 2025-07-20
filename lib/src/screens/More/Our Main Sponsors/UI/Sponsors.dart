@@ -18,12 +18,13 @@ class OurMainSponsorsScreen extends StatelessWidget {
       create: (_) => SponsorsCubit(SponsorsRepository())..fetchSponsors(),
       child: Scaffold(
         backgroundColor: AppColors.neutral100,
-        body: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const CustomAppBar(title: 'Our Main Sponsors'),
-            Expanded(
-              child: BaseScreen(
+        body: SafeArea(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const CustomAppBar(title: 'Our Main Sponsors'),
+              Expanded(
+                child: BaseScreen(
                 child: BlocBuilder<SponsorsCubit, SponsorsState>(
                   builder: (context, state) {
                     if (state is SponsorsLoading) {
@@ -80,6 +81,7 @@ class OurMainSponsorsScreen extends StatelessWidget {
           ],
         ),
       ),
+    )
     );
   }
 }

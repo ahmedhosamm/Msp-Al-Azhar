@@ -20,7 +20,7 @@ class HomeCubit extends Cubit<HomeState> {
 class HomeScreen extends StatelessWidget {
   Widget _buildAppBar(BuildContext context, String title) {
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: 32, horizontal: 16),
+      padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
       decoration: BoxDecoration(
         color: AppColors.primary700,
         borderRadius: const BorderRadius.only(
@@ -45,13 +45,15 @@ class HomeScreen extends StatelessWidget {
         builder: (context, state) {
           return Scaffold(
             backgroundColor: AppColors.neutral100,
-            body: Column(
-              children: [
-                _buildAppBar(context, 'Home'),
-                Expanded(
-                  child: Center(child: Text('1', style: TextStyle(fontSize: 48))),
-                ),
-              ],
+            body: SafeArea(
+              child: Column(
+                children: [
+                  _buildAppBar(context, 'Home'),
+                  Expanded(
+                    child: Center(child: Text('1', style: TextStyle(fontSize: 48))),
+                  ),
+                ],
+              ),
             ),
           );
         },

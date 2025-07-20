@@ -91,7 +91,7 @@ class TeamScreen extends StatelessWidget {
 
   Widget _buildAppBar(BuildContext context, String title) {
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: 32, horizontal: 16),
+      padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
       decoration: BoxDecoration(
         color: AppColors.primary700,
         borderRadius: const BorderRadius.only(
@@ -113,8 +113,8 @@ class TeamScreen extends StatelessWidget {
             ),
           ),
           Container(
-            width: 50,
-            height: 50,
+            width: 48,
+            height: 48,
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
               color: Colors.white,
@@ -140,106 +140,108 @@ class TeamScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => TeamCubit()..fetchTeamMembers(),
-      child: Column(
-        children: [
-          _buildAppBar(context, 'Our Team'),
-
-          Expanded(
-            child: BaseScreen(
-              child: BlocBuilder<TeamCubit, TeamState>(
-                builder: (context, state) {
-                  return RefreshIndicator(
-                    onRefresh: () async {
-                      context.read<TeamCubit>().fetchTeamMembers();
-                    },
-                    child: Builder(
-                      builder: (context) {
-                        if (state is TeamLoading) {
-                          return Center(
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                const CircularProgressIndicator(),
-
-                                const SizedBox(height: 16),
-                                Text('Loading Team Data..' ,
-                                  style: AppTexts.highlightEmphasis.copyWith(
-                                      color:AppColors.neutral1000
-                                  ),
-                                ),
-                              ],
-                            ),
-                          );
-                        } else if (state is TeamLoaded) {
-                          final teamMembers = state.teamMembers;
-                          return Column(
-                            children: [
-                              SectionCountHeader(sectionName: 'Our Team', count: teamMembers.length),
-                              SizedBox(height: 12),
-                              Expanded(
-                                child: ListView.separated(
-                                  padding: EdgeInsets.zero,
-                                  itemCount: teamMembers.length,
-                                  separatorBuilder: (context, i) => const SizedBox(height: 16),
-                                  itemBuilder: (context, i) => _buildTeamCard(context, teamMembers[i]),
-                                ),
-                              ),
-                            ],
-                          );
-                        } else if (state is TeamError) {
-                          return Center(
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                SizedBox(
-                                  height: 160,
-                                  child: Image.asset(
-                                    'assets/img/sorry.png',
-                                    fit: BoxFit.contain,
-                                    errorBuilder: (context, error, stackTrace) => Icon(Icons.error_outline, size: 100, color: AppColors.neutral600),
-                                  ),
-                                ),
-                                const SizedBox(height: 24),
-                                Text(
-                                  "Sorry, Ce Couldn't Cind Anything",
-                                  style: AppTexts.heading3Accent.copyWith(color: AppColors.neutral1000),
-                                ),
-                                const SizedBox(height: 8),
-                                Text(
-                                  "There Was A Problem Fetching The Team Members. Please Check Your Internet Connection Or Try Again.",
-                                  style: AppTexts.contentRegular.copyWith(color: AppColors.neutral400),
-                                  textAlign: TextAlign.center,
-                                ),
-                                const SizedBox(height: 24),
-                                ElevatedButton(
-                                  onPressed: () {
-                                    context.read<TeamCubit>().fetchTeamMembers();
-                                  },
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: AppColors.primary700,
-                                    foregroundColor: AppColors.neutral100,
-                                    padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(8),
+    return SafeArea(
+      child: BlocProvider(
+        create: (_) => TeamCubit()..fetchTeamMembers(),
+        child: Column(
+          children: [
+            _buildAppBar(context, 'Our Team'),
+      
+            Expanded(
+              child: BaseScreen(
+                child: BlocBuilder<TeamCubit, TeamState>(
+                  builder: (context, state) {
+                    return RefreshIndicator(
+                      onRefresh: () async {
+                        context.read<TeamCubit>().fetchTeamMembers();
+                      },
+                      child: Builder(
+                        builder: (context) {
+                          if (state is TeamLoading) {
+                            return Center(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  const CircularProgressIndicator(),
+      
+                                  const SizedBox(height: 16),
+                                  Text('Loading Team Data..' ,
+                                    style: AppTexts.highlightEmphasis.copyWith(
+                                        color:AppColors.neutral1000
                                     ),
                                   ),
-                                  child: Text('Refresh', style: AppTexts.featureBold.copyWith(color: AppColors.neutral100)),
+                                ],
+                              ),
+                            );
+                          } else if (state is TeamLoaded) {
+                            final teamMembers = state.teamMembers;
+                            return Column(
+                              children: [
+                                SectionCountHeader(sectionName: 'Our Team', count: teamMembers.length),
+                                SizedBox(height: 12),
+                                Expanded(
+                                  child: ListView.separated(
+                                    padding: EdgeInsets.zero,
+                                    itemCount: teamMembers.length,
+                                    separatorBuilder: (context, i) => const SizedBox(height: 16),
+                                    itemBuilder: (context, i) => _buildTeamCard(context, teamMembers[i]),
+                                  ),
                                 ),
                               ],
-                            ),
-                          );
-                        }
-                        return const SizedBox();
-                      },
-                    ),
-                  );
-                },
+                            );
+                          } else if (state is TeamError) {
+                            return Center(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  SizedBox(
+                                    height: 160,
+                                    child: Image.asset(
+                                      'assets/img/sorry.png',
+                                      fit: BoxFit.contain,
+                                      errorBuilder: (context, error, stackTrace) => Icon(Icons.error_outline, size: 100, color: AppColors.neutral600),
+                                    ),
+                                  ),
+                                  const SizedBox(height: 24),
+                                  Text(
+                                    "Sorry, Ce Couldn't Cind Anything",
+                                    style: AppTexts.heading3Accent.copyWith(color: AppColors.neutral1000),
+                                  ),
+                                  const SizedBox(height: 8),
+                                  Text(
+                                    "There Was A Problem Fetching The Team Members. Please Check Your Internet Connection Or Try Again.",
+                                    style: AppTexts.contentRegular.copyWith(color: AppColors.neutral400),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                  const SizedBox(height: 24),
+                                  ElevatedButton(
+                                    onPressed: () {
+                                      context.read<TeamCubit>().fetchTeamMembers();
+                                    },
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: AppColors.primary700,
+                                      foregroundColor: AppColors.neutral100,
+                                      padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
+                                    ),
+                                    child: Text('Refresh', style: AppTexts.featureBold.copyWith(color: AppColors.neutral100)),
+                                  ),
+                                ],
+                              ),
+                            );
+                          }
+                          return const SizedBox();
+                        },
+                      ),
+                    );
+                  },
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

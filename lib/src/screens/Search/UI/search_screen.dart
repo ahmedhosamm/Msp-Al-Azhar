@@ -32,103 +32,105 @@ class SearchScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => SearchCubit(),
-      child: BlocBuilder<SearchCubit, SearchState>(
-        builder: (context, state) {
-          final query = (state as SearchInitial).query;
-          final TextEditingController _controller = TextEditingController(text: query);
-          return Scaffold(
-            backgroundColor: AppColors.neutral100,
-            appBar: PreferredSize(
-              preferredSize: Size.fromHeight(90),
-              child: Container(
-                padding: const EdgeInsets.symmetric(vertical: 32, horizontal: 16),
-                decoration: BoxDecoration(
-                  color: AppColors.primary700,
-                  borderRadius: const BorderRadius.only(
-                    bottomLeft: Radius.circular(12),
-                    bottomRight: Radius.circular(12),
+    return SafeArea(
+      child: BlocProvider(
+        create: (_) => SearchCubit(),
+        child: BlocBuilder<SearchCubit, SearchState>(
+          builder: (context, state) {
+            final query = (state as SearchInitial).query;
+            final TextEditingController _controller = TextEditingController(text: query);
+            return Scaffold(
+              backgroundColor: AppColors.neutral100,
+              appBar: PreferredSize(
+                preferredSize: Size.fromHeight(90),
+                child: Container(
+                  padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+                  decoration: BoxDecoration(
+                    color: AppColors.primary700,
+                    borderRadius: const BorderRadius.only(
+                      bottomLeft: Radius.circular(12),
+                      bottomRight: Radius.circular(12),
+                    ),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      GestureDetector(
+                        onTap: () => Navigator.of(context).pop(),
+                        child: Container(
+                          width: 50,
+                          height: 50,
+                          padding: const EdgeInsets.all(12),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Icon(Icons.arrow_back, color: AppColors.primary700),
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Text(
+                        'Search',
+                        style: AppTexts.heading3Accent.copyWith(color: AppColors.neutral100),
+                      ),
+                    ],
                   ),
                 ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
+              ),
+              body: BaseScreen(
+                child: Column(
                   children: [
-                    GestureDetector(
-                      onTap: () => Navigator.of(context).pop(),
-                      child: Container(
-                        width: 50,
-                        height: 50,
-                        padding: const EdgeInsets.all(12),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(8),
+                    Container(
+                      decoration: BoxDecoration(
+                        color: AppColors.neutral100,
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: AppColors.neutral600, width: 1),
+                      ),
+                      child: TextField(
+                        controller: _controller,
+                        autofocus: true,
+                        style: AppTexts.heading3Accent.copyWith(color: AppColors.neutral1000),
+                        decoration: InputDecoration(
+                          hintText: 'Search for a Blog or Team member...',
+                          hintStyle: AppTexts.contentRegular.copyWith(color: AppColors.neutral600),
+                          border: InputBorder.none,
+                          contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                          suffixIcon: query.isNotEmpty
+                              ? IconButton(
+                                  icon: Icon(Icons.clear, color: AppColors.neutral600),
+                                  onPressed: () {
+                                    context.read<SearchCubit>().updateQuery('');
+                                  },
+                                )
+                              : null,
                         ),
-                        child: Icon(Icons.arrow_back, color: AppColors.primary700),
+                        onChanged: (val) {
+                          context.read<SearchCubit>().updateQuery(val.trim());
+                        },
+                        textInputAction: TextInputAction.search,
+                        onSubmitted: (val) {
+                          context.read<SearchCubit>().updateQuery(val.trim());
+                        },
                       ),
                     ),
-                    const SizedBox(width: 12),
-                    Text(
-                      'Search',
-                      style: AppTexts.heading3Accent.copyWith(color: AppColors.neutral100),
+                    const SizedBox(height: 16),
+                    Expanded(
+                      child: MultiBlocProvider(
+                        providers: [
+                          BlocProvider(create: (_) => BlogsCubit()..fetchBlogs()),
+                          BlocProvider(create: (_) => TeamCubit()..fetchTeamMembers()),
+                        ],
+                        child: query.isEmpty
+                            ? SizedBox()
+                            : _SearchResults(query: query),
+                      ),
                     ),
                   ],
                 ),
               ),
-            ),
-            body: BaseScreen(
-              child: Column(
-                children: [
-                  Container(
-                    decoration: BoxDecoration(
-                      color: AppColors.neutral100,
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: AppColors.neutral600, width: 1),
-                    ),
-                    child: TextField(
-                      controller: _controller,
-                      autofocus: true,
-                      style: AppTexts.heading3Accent.copyWith(color: AppColors.neutral1000),
-                      decoration: InputDecoration(
-                        hintText: 'Search for a Blog or Team member...',
-                        hintStyle: AppTexts.contentRegular.copyWith(color: AppColors.neutral600),
-                        border: InputBorder.none,
-                        contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-                        suffixIcon: query.isNotEmpty
-                            ? IconButton(
-                                icon: Icon(Icons.clear, color: AppColors.neutral600),
-                                onPressed: () {
-                                  context.read<SearchCubit>().updateQuery('');
-                                },
-                              )
-                            : null,
-                      ),
-                      onChanged: (val) {
-                        context.read<SearchCubit>().updateQuery(val.trim());
-                      },
-                      textInputAction: TextInputAction.search,
-                      onSubmitted: (val) {
-                        context.read<SearchCubit>().updateQuery(val.trim());
-                      },
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  Expanded(
-                    child: MultiBlocProvider(
-                      providers: [
-                        BlocProvider(create: (_) => BlogsCubit()..fetchBlogs()),
-                        BlocProvider(create: (_) => TeamCubit()..fetchTeamMembers()),
-                      ],
-                      child: query.isEmpty
-                          ? SizedBox()
-                          : _SearchResults(query: query),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          );
-        },
+            );
+          },
+        ),
       ),
     );
   }

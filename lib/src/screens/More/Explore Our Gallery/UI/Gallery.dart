@@ -76,81 +76,86 @@ class _GalleryBodyState extends State<_GalleryBody> with SingleTickerProviderSta
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        CustomAppBar(title: 'Explore our Gallery'),
-        Expanded(
-          child: BaseScreen(
-            child: Column(
-              children: [
-                TabBar(
-                    controller: _tabController,
-                    indicatorColor: AppColors.primary700,
-                    indicatorWeight: 3,
-                    labelPadding: const EdgeInsets.symmetric(vertical: 0),
-                    tabs: [
-                      _tabItem(icon: Icons.photo, label: 'All', selected: _tabController.index == 0),
-                      _tabItem(icon: Icons.event, label: 'Events', selected: _tabController.index == 1),
-                      _tabItem(icon: Icons.group, label: 'Sessions', selected: _tabController.index == 2),
-                    ],
-                  ),
-                Expanded(
-                  child: BlocBuilder<GalleryCubit, GalleryState>(
-                    builder: (context, state) {
-                      print('GalleryState: ' + state.toString());
-                      if (state is GalleryLoading) {
-                        return const Center(child: CircularProgressIndicator());
-                      } else if (state is GalleryLoaded) {
-                        print('Loaded images: ' + state.images.length.toString());
-                        if (state.images.isEmpty) {
-                          return const Center(child: Text('No images found'));
-                        }
-                        final images = state.images;
-                        return Padding(
-                          padding: EdgeInsets.zero,
-                          child: RefreshIndicator(
-                            onRefresh: () async {
-                              context.read<GalleryCubit>().fetchAll();
-                            },
-                            child: GridView.builder(
-                              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisCount: 2,
-                                crossAxisSpacing: 12,
-                                mainAxisSpacing: 12,
-                                childAspectRatio: 1,
-                              ),
-                              itemCount: images.length,
-                              itemBuilder: (context, index) {
-                                print('IMAGE URL: ${images[index].image}');
-                                return ClipRRect(
-                                  borderRadius: BorderRadius.circular(16),
-                                  child: Image.network(
-                                    images[index].image,
-                                    fit: BoxFit.cover,
-                                    errorBuilder: (c, e, s) => const Icon(Icons.broken_image),
-                                    height: 220,
-                                    loadingBuilder: (context, child, loadingProgress) {
-                                      if (loadingProgress == null) return child;
-                                      return Center(child: CircularProgressIndicator());
-                                    },
+    return Scaffold(
+      backgroundColor: AppColors.neutral100,
+      body: SafeArea(
+        child: Column(
+          children: [
+            CustomAppBar(title: 'Explore our Gallery'),
+            Expanded(
+              child: BaseScreen(
+                child: Column(
+                  children: [
+                    TabBar(
+                        controller: _tabController,
+                        indicatorColor: AppColors.primary700,
+                        indicatorWeight: 3,
+                        labelPadding: const EdgeInsets.symmetric(vertical: 0),
+                        tabs: [
+                          _tabItem(icon: Icons.photo, label: 'All', selected: _tabController.index == 0),
+                          _tabItem(icon: Icons.event, label: 'Events', selected: _tabController.index == 1),
+                          _tabItem(icon: Icons.group, label: 'Sessions', selected: _tabController.index == 2),
+                        ],
+                      ),
+                    Expanded(
+                      child: BlocBuilder<GalleryCubit, GalleryState>(
+                        builder: (context, state) {
+                          print('GalleryState: ' + state.toString());
+                          if (state is GalleryLoading) {
+                            return const Center(child: CircularProgressIndicator());
+                          } else if (state is GalleryLoaded) {
+                            print('Loaded images: ' + state.images.length.toString());
+                            if (state.images.isEmpty) {
+                              return const Center(child: Text('No images found'));
+                            }
+                            final images = state.images;
+                            return Padding(
+                              padding: EdgeInsets.zero,
+                              child: RefreshIndicator(
+                                onRefresh: () async {
+                                  context.read<GalleryCubit>().fetchAll();
+                                },
+                                child: GridView.builder(
+                                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                                    crossAxisCount: 2,
+                                    crossAxisSpacing: 12,
+                                    mainAxisSpacing: 12,
+                                    childAspectRatio: 1,
                                   ),
-                                );
-                              },
-                            ),
-                          ),
-                        );
-                      } else if (state is GalleryError) {
-                        return Center(child: Text('Error: ${state.message}'));
-                      }
-                      return const SizedBox();
-                    },
-                  ),
+                                  itemCount: images.length,
+                                  itemBuilder: (context, index) {
+                                    print('IMAGE URL: ${images[index].image}');
+                                    return ClipRRect(
+                                      borderRadius: BorderRadius.circular(16),
+                                      child: Image.network(
+                                        images[index].image,
+                                        fit: BoxFit.cover,
+                                        errorBuilder: (c, e, s) => const Icon(Icons.broken_image),
+                                        height: 220,
+                                        loadingBuilder: (context, child, loadingProgress) {
+                                          if (loadingProgress == null) return child;
+                                          return Center(child: CircularProgressIndicator());
+                                        },
+                                      ),
+                                    );
+                                  },
+                                ),
+                              ),
+                            );
+                          } else if (state is GalleryError) {
+                            return Center(child: Text('Error: ${state.message}'));
+                          }
+                          return const SizedBox();
+                        },
+                      ),
+                    ),
+                  ],
                 ),
-              ],
+              ),
             ),
-          ),
+          ],
         ),
-      ],
+      ),
     );
   }
 }

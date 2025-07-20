@@ -128,11 +128,12 @@ class _BlogsDetailsState extends State<BlogsDetails> {
           }
           return Scaffold(
             backgroundColor: AppColors.neutral100,
-            body: Column(
-              children: [
-                _buildAppBar(context, blog, loading),
-                Expanded(
-                  child: BaseScreen(
+            body: SafeArea(
+              child: Column(
+                children: [
+                  _buildAppBar(context, blog, loading),
+                  Expanded(
+                    child: BaseScreen(
                     child: () {
                       if (state is BlogsDetailsLoading) {
                         return const Center(child: CircularProgressIndicator());
@@ -208,6 +209,7 @@ class _BlogsDetailsState extends State<BlogsDetails> {
                 ),
               ],
             ),
+          )
           );
         },
       ),

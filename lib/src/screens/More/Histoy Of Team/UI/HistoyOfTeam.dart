@@ -12,12 +12,13 @@ class HistoyOfTeamScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.neutral100,
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const CustomAppBar(title: 'Histoy Of Team'),
-          Expanded(
-            child: BaseScreen(
+      body: SafeArea(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const CustomAppBar(title: 'Histoy Of Team'),
+            Expanded(
+              child: BaseScreen(
               child: Center(
                 child: Text(
                   'Team history content goes here...',
@@ -28,6 +29,7 @@ class HistoyOfTeamScreen extends StatelessWidget {
           ),
         ],
       ),
+    )
     );
   }
 }

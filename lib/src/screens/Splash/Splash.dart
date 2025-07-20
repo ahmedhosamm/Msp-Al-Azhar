@@ -52,36 +52,38 @@ class SplashScreen extends StatelessWidget {
         },
         child: Scaffold(
           backgroundColor: AppColors.primary700,
-          body: Center(
-            child: FadeTransition(
-              opacity: AlwaysStoppedAnimation(1.0),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Container(
-                    width: 150,
-                    height: 150,
-                    decoration: BoxDecoration(
-                      image: DecorationImage(
-                        image: AssetImage('assets/img/MSPLogo.png'),
+          body: SafeArea(
+            child: Center(
+              child: FadeTransition(
+                opacity: AlwaysStoppedAnimation(1.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      width: 150,
+                      height: 150,
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                          image: AssetImage('assets/img/MSPLogo.png'),
+                        ),
                       ),
                     ),
-                  ),
-                  Text(
-                    "Welcome To MSP",
-                    style: AppTexts.heading2Bold.copyWith(
-                      color: AppColors.neutral100,
+                    Text(
+                      "Welcome To MSP",
+                      style: AppTexts.heading2Bold.copyWith(
+                        color: AppColors.neutral100,
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 16),
-                  Text(
-                    "program initiated in 2001 by Microsoft",
-                    style: AppTexts.contentEmphasis.copyWith(
-                      color: AppColors.neutral100,
+                    const SizedBox(height: 16),
+                    Text(
+                      "program initiated in 2001 by Microsoft",
+                      style: AppTexts.contentEmphasis.copyWith(
+                        color: AppColors.neutral100,
+                      ),
+                      textAlign: TextAlign.center,
                     ),
-                    textAlign: TextAlign.center,
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),

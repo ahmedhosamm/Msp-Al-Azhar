@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../style/Colors.dart';
 import '../../../../style/Fonts.dart';
 import '../../../../style/BaseScreen.dart';
-import '../../../../style/CustomAppBar.dart';
 
 import '../../Our Committees/UI/committees.dart';
 import '../Explore Our Gallery/UI/Gallery.dart';
@@ -13,6 +12,7 @@ import '../Contact Us/UI/ContactUs.dart';
 import '../FAQ/UI/FAQ.dart';
 import '../Our Main Sponsors/UI/Sponsors.dart';
 import '../../More/Member’s Feedback/UI/Member’s Feedback.dart';
+import '../../Search/UI/search_screen.dart';
 
 // Bloc States
 abstract class MoreState {}
@@ -75,6 +75,25 @@ class MoreScreen extends StatelessWidget {
       route: '/invite',
     ),
   ];
+
+  Widget _buildAppBar(BuildContext context, String title) {
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
+      decoration: BoxDecoration(
+        color: AppColors.primary700,
+        borderRadius: const BorderRadius.only(
+          bottomLeft: Radius.circular(12),
+          bottomRight: Radius.circular(12),
+        ),
+      ),
+      child: Center(
+        child: Text(
+          title,
+          style: AppTexts.heading3Accent.copyWith(color: AppColors.neutral100),
+        ),
+      ),
+    );
+  }
 
   Widget _buildMoreItem(BuildContext context, _MoreItem item) {
     return InkWell(
@@ -165,11 +184,12 @@ class MoreScreen extends StatelessWidget {
       create: (_) => MoreCubit()..load(),
       child: BlocBuilder<MoreCubit, MoreState>(
         builder: (context, state) {
-          return Column(
-            children: [
-              CustomAppBar(title: 'More'),
-              Expanded(
-                child: BaseScreen(
+          return SafeArea(
+            child: Column(
+              children: [
+                _buildAppBar(context, 'More'),
+                Expanded(
+                  child: BaseScreen(
                   child: ListView.separated(
                     padding: EdgeInsets.zero,
                     itemCount: items.length,
@@ -182,9 +202,10 @@ class MoreScreen extends StatelessWidget {
                     ),
                     itemBuilder: (context, index) => _buildMoreItem(context, items[index]),
                   ),
+                                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           );
         },
       ),

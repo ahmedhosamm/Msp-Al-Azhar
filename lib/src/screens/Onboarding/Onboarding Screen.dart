@@ -93,7 +93,10 @@ class Onboarding extends StatelessWidget {
             textDirection: TextDirection.ltr,
             child: Scaffold(
               backgroundColor: AppColors.neutral100,
-              appBar: AppBar(
+              body: SafeArea(
+                child: Column(
+                  children: [
+                    AppBar(
                 backgroundColor: AppColors.neutral100,
                 elevation: 0,
                 actions: <Widget>[
@@ -114,17 +117,22 @@ class Onboarding extends StatelessWidget {
                     ),
                 ],
               ),
-              body: PageView.builder(
-                controller: cubit.pageController,
-                itemCount: pages.length,
-                onPageChanged: (index) {
-                  cubit.goToPage(index);
-                },
-                itemBuilder: (context, index) {
-                  return _buildPage(context, cubit, pages[index], index, isSmallScreen, currentIndex);
-                },
+              Expanded(
+                child: PageView.builder(
+                  controller: cubit.pageController,
+                  itemCount: pages.length,
+                  onPageChanged: (index) {
+                    cubit.goToPage(index);
+                  },
+                  itemBuilder: (context, index) {
+                    return _buildPage(context, cubit, pages[index], index, isSmallScreen, currentIndex);
+                  },
+                ),
               ),
-            ),
+            ],
+          ),
+        ),
+      )
           );
         },
       ),

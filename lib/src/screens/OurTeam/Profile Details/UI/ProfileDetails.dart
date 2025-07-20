@@ -175,11 +175,12 @@ class _ProfileDetailsState extends State<ProfileDetails> with SingleTickerProvid
         builder: (context, state) {
           return Scaffold(
             backgroundColor: AppColors.neutral100,
-            body: Column(
-              children: [
-                _buildAppBar(context, state),
-                Expanded(
-                  child: BaseScreen(
+            body: SafeArea(
+              child: Column(
+                children: [
+                  _buildAppBar(context, state),
+                  Expanded(
+                    child: BaseScreen(
                     child: () {
                       if (state is ProfileDetailsLoading) {
                         return const Center(child: CircularProgressIndicator());
@@ -274,6 +275,7 @@ class _ProfileDetailsState extends State<ProfileDetails> with SingleTickerProvid
                 ),
               ],
             ),
+          )
           );
         },
       ),

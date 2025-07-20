@@ -11,12 +11,13 @@ class OurCommitteesScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.neutral100,
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const CustomAppBar(title: 'Our Committees'),
-          Expanded(
-            child: BaseScreen(
+      body: SafeArea(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const CustomAppBar(title: 'Our Committees'),
+            Expanded(
+              child: BaseScreen(
               child: Center(
                 child: Text(
                   'Committees content goes here...',
@@ -27,6 +28,7 @@ class OurCommitteesScreen extends StatelessWidget {
           ),
         ],
       ),
+    )
     );
   }
 }
