@@ -32,13 +32,18 @@ class MembersFeedbackScreen extends StatelessWidget {
                         if (state.reviews.isEmpty) {
                           return Center(child: Text('No feedback yet.', style: AppTexts.highlightEmphasis));
                         }
-                        return ListView.separated(
-                          itemCount: state.reviews.length,
-                          separatorBuilder: (_, __) => const SizedBox(height: 24),
-                          itemBuilder: (context, index) {
-                            final review = state.reviews[index];
-                            return FeedbackCard(review: review);
+                        return RefreshIndicator(
+                          onRefresh: () async {
+                            context.read<FeedbackCubit>().fetchReviews();
                           },
+                          child: ListView.separated(
+                            itemCount: state.reviews.length,
+                            separatorBuilder: (_, __) => const SizedBox(height: 24),
+                            itemBuilder: (context, index) {
+                              final review = state.reviews[index];
+                              return FeedbackCard(review: review);
+                            },
+                          ),
                         );
                       } else if (state is FeedbackError) {
                         return Center(child: Text(state.message, style: AppTexts.highlightEmphasis));
@@ -81,7 +86,7 @@ class FeedbackCard extends StatelessWidget {
               children: [
                 Text(
                   review.title,
-                  style: AppTexts.featureBold,
+                  style: AppTexts.featureAccent,
                 ),
                 const SizedBox(height: 8),
                 Text(
@@ -106,11 +111,20 @@ class FeedbackCard extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             child: Row(
               children: [
-                CircleAvatar(
-                  radius: 24,
+                Container(
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  border: Border.all(
+                    color: AppColors.neutral100, // لون الستروك
+                    width: 1, // سمك الستروك
+                  ),
+                ),
+                child: CircleAvatar(
+                  radius: 22,
                   backgroundImage: NetworkImage(review.photo),
                   backgroundColor: AppColors.neutral200,
                 ),
+              ),
                 const SizedBox(width: 8),
                 Expanded(
                   child: Text(

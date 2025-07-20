@@ -36,52 +36,57 @@ class OurMainSponsorsScreen extends StatelessWidget {
                       if (sponsors.isEmpty) {
                         return const Center(child: Text('No sponsors found'));
                       }
-                      return GridView.builder(
-                        padding: EdgeInsets.zero,
-                        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 2,
-                          crossAxisSpacing: 12,
-                          mainAxisSpacing: 12,
-                          childAspectRatio: 1,
-                        ),
-                        itemCount: sponsors.length,
-                        itemBuilder: (context, index) {
-                          final sponsor = sponsors[index];
-                          return Card(
-                            elevation: 2,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
-                              side: BorderSide(
-                                color: AppColors.neutral400, // لون الشادو/الحد
-                                width: 1,
-                              ),
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(8),
-                                child: Image.network(
-                                  sponsor.imageUrl,
-                                  fit: BoxFit.cover,
-                                  width: double.infinity,
-                                  height: double.infinity,
-                                  errorBuilder: (context, error, stackTrace) => const Icon(Icons.broken_image, size: 48),
+                      return RefreshIndicator(
+                        onRefresh: () async {
+                          context.read<SponsorsCubit>().fetchSponsors();
+                        },
+                        child: GridView.builder(
+                          padding: EdgeInsets.zero,
+                          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2,
+                            crossAxisSpacing: 12,
+                            mainAxisSpacing: 12,
+                            childAspectRatio: 1,
+                          ),
+                          itemCount: sponsors.length,
+                          itemBuilder: (context, index) {
+                            final sponsor = sponsors[index];
+                            return Card(
+                              elevation: 2,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                side: BorderSide(
+                                  color: AppColors.neutral400, // لون الشادو/الحد
+                                  width: 1,
                                 ),
                               ),
-                            ),
-                          );
-                        },
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(8),
+                                  child: Image.network(
+                                    sponsor.imageUrl,
+                                    fit: BoxFit.cover,
+                                    width: double.infinity,
+                                    height: double.infinity,
+                                    errorBuilder: (context, error, stackTrace) => const Icon(Icons.broken_image, size: 48),
+                                  ),
+                                ),
+                              ),
+                            );
+                          },
+                        ),
                       );
                     }
                     return const SizedBox.shrink();
                   },
                 ),
+                )
               ),
-            ),
-          ],
+            ]
+          ),
         ),
       ),
-    )
     );
   }
 }
