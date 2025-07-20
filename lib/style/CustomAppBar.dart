@@ -23,8 +23,8 @@ class CustomAppBar extends StatelessWidget {
           GestureDetector(
             onTap: () => Navigator.pop(context),
             child: Container(
-              width: 50,
-              height: 50,
+              width: 48,
+              height: 48,
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
                 color: Colors.white,

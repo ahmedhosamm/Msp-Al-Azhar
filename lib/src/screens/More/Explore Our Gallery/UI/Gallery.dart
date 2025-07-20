@@ -90,13 +90,14 @@ class _GalleryBodyState extends State<_GalleryBody> with SingleTickerProviderSta
                         controller: _tabController,
                         indicatorColor: AppColors.primary700,
                         indicatorWeight: 3,
-                        labelPadding: const EdgeInsets.symmetric(vertical: 0),
+                        labelPadding: const EdgeInsets.only(bottom: 4),
                         tabs: [
                           _tabItem(icon: Icons.photo, label: 'All', selected: _tabController.index == 0),
                           _tabItem(icon: Icons.event, label: 'Events', selected: _tabController.index == 1),
                           _tabItem(icon: Icons.group, label: 'Sessions', selected: _tabController.index == 2),
                         ],
                       ),
+                    const SizedBox(height: 16),
                     Expanded(
                       child: BlocBuilder<GalleryCubit, GalleryState>(
                         builder: (context, state) {

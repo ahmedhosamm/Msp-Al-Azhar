@@ -11,7 +11,7 @@ import '../Histoy Of Team/UI/HistoyOfTeam.dart';
 import '../Contact Us/UI/ContactUs.dart';
 import '../FAQ/UI/FAQ.dart';
 import '../Our Main Sponsors/UI/Sponsors.dart';
-import '../../More/Member’s Feedback/UI/Member’s Feedback.dart';
+import '../../More/Member’s Feedback/UI/Feedback.dart';
 import '../../Search/UI/search_screen.dart';
 
 // Bloc States
